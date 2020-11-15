@@ -8,25 +8,33 @@
 
 # This whole file has become very hacky, I am sure there is a better way to do all of this, but for now, this works.
 
-#BTENABLED=$(get_ee_setting ee_bluetooth.enabled)
 
-#if [[ "$BTENABLED" == "1" ]]; then
+BTENABLED=$(get_ee_setting ee_bluetooth.enabled)
+
+if [[ "$BTENABLED" == "1" ]]; then
 	# We don't need the BT agent while running games
-#	NPID=$(pgrep -f batocera-bluetooth-agent)
+	NPID=$(pgrep -f batocera-bluetooth-agent)
 
-#	if [[ ! -z "$NPID" ]]; then
-#		kill "$NPID"
-#	fi
-#fi 
+	if [[ ! -z "$NPID" ]]; then
+		kill "$NPID"
+	fi
+fi 
 
-#if [[ "$EE_DEVICE" != "OdroidGoAdvance" ]] || [[ "$EE_DEVICE" != "RG351P" ]]; then
 # clear terminal window
 	clear > /dev/tty
 	clear > /dev/tty0
 	clear > /dev/tty1
-#fi
 
 arguments="$@"
+
+# Is userland 32bit or 64bit?
+TEST=$(ldd /usr/bin/emulationstation | grep 64)
+if [ $? == 0 ]
+then
+  MYARCH="aarch64"
+else
+  MYARCH="arm"
+fi
 
 #set audio device out according to emuelec.conf
 AUDIO_DEVICE="hw:$(get_ee_setting ee_audio_device)"
@@ -41,12 +49,19 @@ CFG="/storage/.emulationstation/es_settings.cfg"
 LOGEMU="No"
 VERBOSE=""
 LOGSDIR="/emuelec/logs"
-EMUELECLOG="$LOGSDIR/emuelec.log"
 TBASH="/usr/bin/bash"
 JSLISTENCONF="/emuelec/configs/jslisten.cfg"
 RATMPCONF="/tmp/retroarch/ee_retroarch.cfg"
 RATMPCONF="/storage/.config/retroarch/retroarch.cfg"
 NETPLAY="No"
+
+
+if [ $(get_es_setting string LogLevel) == "minimal" ]; then 
+    EMUELECLOG="/dev/null"
+    echo "Logging has been dissabled, enable it in Main Menu > System Settings > Developer > Log Level"
+else
+    EMUELECLOG="$LOGSDIR/emuelec.log"
+fi
 
 set_kill_keys() {
 	
@@ -63,10 +78,6 @@ if [[ ! -d "$LOGSDIR" ]]; then
 mkdir -p "$LOGSDIR"
 fi
 
-# Clear the log file
-echo "EmuELEC Run Log" > $EMUELECLOG
-cat /etc/motd >> $EMUELECLOG
-
 # Extract the platform name from the arguments
 PLATFORM="${arguments##*-P}"  # read from -P onwards
 PLATFORM="${PLATFORM%% *}"  # until a space is found
@@ -78,20 +89,7 @@ EMULATOR="${EMULATOR%% *}"  # until a space is found
 
 ROMNAME="$1"
 BASEROMNAME=${ROMNAME##*/}
-
-
-# Check for missing bios if needed
-REQUIRESBIOS=(atari5200 atari800 atari7800 atarilynx colecovision amiga amigacd32 o2em intellivision pcfx fds segacd saturn dreamcast naomi atomiswave x68000 neogeo neogeocd msx msx2 sc-3000)
-
-(for e in "${REQUIRESBIOS[@]}"; do [[ "${e}" == "${PLATFORM}" ]] && exit 0; done) && RB=0 || RB=1	
-if [ $RB == 0 ]; then
-
-CBPLATFORM="${PLATFORM}"
-[[ "${CBPLATFORM}" == "msx2" ]] && CBPLATFORM="msx"
-
-ee_check_bios "${CBPLATFORM}" "${CORE}" "${EMULATOR}" "${ROMNAME}" "${EMUELECLOG}"
-
-fi #require bios ends
+GAMEFOLDER="${ROMNAME//${BASEROMNAME}}"
 
 if [[ $EMULATOR = "libretro" ]]; then
 	EMU="${CORE}_libretro"
@@ -156,7 +154,7 @@ case ${PLATFORM} in
 		RUNTHIS='${TBASH} /usr/bin/openbor.sh "${ROMNAME}"'
 		;;
 	"setup")
-	[[ "$EE_DEVICE" == "OdroidGoAdvance" ]] || [[ "$EE_DEVICE" == "RG351P" ]] && set_kill_keys "kmscon" || set_kill_keys "fbterm"
+	[[ "$EE_DEVICE" == "RG351P" ]] && set_kill_keys "kmscon" || set_kill_keys "fbterm"
 		RUNTHIS='${TBASH} /emuelec/scripts/fbterm.sh "${ROMNAME}"'
 		EMUELECLOG="$LOGSDIR/ee_script.log"
 		;;
@@ -227,14 +225,20 @@ case ${PLATFORM} in
 		RUNTHIS='${TBASH} /storage/.config/emuelec/scripts/hypseus.start.sh "${ROMNAME}"'
 		fi
 		;;
+	"wii"|"gamecube")
+		if [ "$EMU" = "dolphin" ]; then
+		set_kill_keys "dolphin-emu-nogui"
+		RUNTHIS='${TBASH} /storage/.config/emuelec/bin/dolphin.sh "${ROMNAME}"'
+		fi
+		;;
 	"pc")
 		if [ "$EMU" = "DOSBOXSDL2" ]; then
 		set_kill_keys "dosbox"
-		RUNTHIS='${TBASH} /usr/bin/dosbox.start "${ROMNAME}"'
+		RUNTHIS='${TBASH} /usr/bin/dosbox.start -conf "${GAMEFOLDER}dosbox-SDL2.conf"'
 		fi
 		if [ "$EMU" = "DOSBOX-X" ]; then
 		set_kill_keys "dosbox-x"
-		RUNTHIS='${TBASH} /usr/bin/dosbox-x.start "${ROMNAME}"'
+		RUNTHIS='${TBASH} /usr/bin/dosbox-x.start -conf "${GAMEFOLDER}dosbox-SDL2.conf"'
 		fi
 		;;		
 	"psp"|"pspminis")
@@ -247,16 +251,25 @@ case ${PLATFORM} in
 		;;
 	"neocd")
 		if [ "$EMU" = "fbneo" ]; then
-		RUNTHIS='nice -n -19 /usr/bin/retroarch $VERBOSE -L /tmp/cores/fbneo_libretro.so --subsystem neocd --config ${RATMPCONF} "${ROMNAME}"'
+		RUNTHIS='/usr/bin/retroarch $VERBOSE -L /tmp/cores/fbneo_libretro.so --subsystem neocd --config ${RATMPCONF} "${ROMNAME}"'
 		fi
 		;;
 	"mplayer")
 		set_kill_keys "${EMU}"
 		RUNTHIS='${TBASH} /emuelec/scripts/fbterm.sh mplayer_video "${ROMNAME}" "${EMU}"'
 		;;
+	"pico8")
+		set_kill_keys "pico8_dyn"
+		RUNTHIS='${TBASH} /emuelec/scripts/pico8.sh "${ROMNAME}"'
+			;;
 	esac
 else
 # We are running a Libretro emulator set all the settings that we chose on ES
+
+# Workaround for Atomiswave
+if [[ ${PLATFORM} == "atomiswave" ]]; then
+	rm ${ROMNAME}.nvmem*
+fi
 
 if [[ ${PLATFORM} == "ports" ]]; then
 	PORTCORE="${arguments##*-C}"  # read from -C onwards
@@ -264,7 +277,21 @@ if [[ ${PLATFORM} == "ports" ]]; then
 	PORTSCRIPT="${arguments##*-SC}"  # read from -SC onwards
 fi
 
-RUNTHIS='nice -n -19 /usr/bin/retroarch $VERBOSE -L /tmp/cores/${EMU}.so --config ${RATMPCONF} "${ROMNAME}"'
+# Check if we need retroarch 32 bits or 64 bits
+RABIN="retroarch"
+if [[ "${PLATFORM}" == "psx" ]] || [[ "${PLATFORM}" == "n64" ]]; then
+    if [[ "${CORE}" == "pcsx_rearmed" ]] || [[ "${CORE}" == "parallel_n64" ]]; then
+	if [ "${MYARCH}" == "arm" ]
+	then
+          RABIN="retroarch"
+	else
+	  export LD_LIBRARY_PATH="/usr/lib32"
+	  RABIN="retroarch32"
+	fi
+    fi
+fi
+
+RUNTHIS='/usr/bin/${RABIN} $VERBOSE -L /tmp/cores/${EMU}.so --config ${RATMPCONF} "${ROMNAME}"'
 CONTROLLERCONFIG="${arguments#*--controllers=*}"
 CONTROLLERCONFIG="${CONTROLLERCONFIG%% --*}"  # until a -- is found
 CORE=${EMU%%_*}
@@ -277,66 +304,50 @@ set_ee_setting "netplay.client.ip" "disable"
 set_ee_setting "netplay.client.port" "disable"
 
 if [[ ${NETPLAY} != "No" ]]; then
-NETPLAY_NICK=$(get_ee_setting netplay.nickname)
-[[ -z "$NETPLAY_NICK" ]] && NETPLAY_NICK="Anonymous"
-NETPLAY="$(echo ${NETPLAY} | sed "s|--nick|--nick \"${NETPLAY_NICK}\"|")"
+  NETPLAY_NICK=$(get_ee_setting netplay.nickname)
+  [[ -z "$NETPLAY_NICK" ]] && NETPLAY_NICK="Anonymous"
+  NETPLAY="$(echo ${NETPLAY} | sed "s|--nick|--nick \"${NETPLAY_NICK}\"|")"
 
-RUNTHIS=$(echo ${RUNTHIS} | sed "s|--config|${NETPLAY} --config|")
+  RUNTHIS=$(echo ${RUNTHIS} | sed "s|--config|${NETPLAY} --config|")
 
-if [[ "${NETPLAY}" == *"connect"* ]]; then
-	echo "Netplay client!" >> $EMUELECLOG
+    if [[ "${NETPLAY}" == *"connect"* ]]; then
 	NETPLAY_PORT="${arguments##*--port }"  # read from -netplayport  onwards
 	NETPLAY_PORT="${NETPLAY_PORT%% *}"  # until a space is found
 	NETPLAY_IP="${arguments##*--connect }"  # read from -netplayip  onwards
 	NETPLAY_IP="${NETPLAY_IP%% *}"  # until a space is found
 	set_ee_setting "netplay.client.ip" "${NETPLAY_IP}"
 	set_ee_setting "netplay.client.port" "${NETPLAY_PORT}"
-fi
+    fi
 
-# if [[ "${NETPLAY}" == *"host"* ]]; then
-# echo "Netplay host!" >> $EMUELECLOG
-#	NETPLAY_PORT=$(get_ee_setting netplay.port)
-#	NETPLAY_RELAY==$(get_ee_setting global.netplay.relay)
-#	NETPLAY="--host"
-#	[[ ! -z "$NETPLAY_PORT" ]] && NETPLAY="$NETPLAY --port $NETPLAY_PORT"
-#	[[ ! -z "$NETPLAY_RELAY" && "$NETPLAY_RELAY" != *"none"* ]] && NETPLAY="$NETPLAY --relay $NETPLAY_RELAY"
-#elif [[ "${NETPLAY}" == *"client"* ]]; then
-#echo "Netplay client!" >> $EMUELECLOG
-#	NETPLAY_PORT="${arguments##*-netplayport }"  # read from -netplayport  onwards
-#	NETPLAY_PORT="${NETPLAY_PORT%% *}"  # until a space is found
-#	NETPLAY_IP="${arguments##*-netplayip }"  # read from -netplayip  onwards
-#	NETPLAY_IP="${NETPLAY_IP%% *}"  # until a space is found
-#	NETPLAY=""
-#	[[ ! -z "$NETPLAY_IP" ]] && NETPLAY="$NETPLAY --connect $NETPLAY_IP"
-#	[[ ! -z "$NETPLAY_PORT" ]] && NETPLAY="$NETPLAY --port $NETPLAY_PORT"
-#fi
-
-#[[ ! -z "$NETPLAY_NICK" ]] && NETPLAY="$NETPLAY --nick $NETPLAY_NICK"
-#RUNTHIS=$(echo ${RUNTHIS} | sed "s|--config|${NETPLAY} --config|")
-fi
+  fi
 # End netplay
-
+fi
 
 if [[ ${PLATFORM} == "ports" ]]; then
-	SHADERSET=$(/storage/.config/emuelec/scripts/setsettings.sh "${PLATFORM}" "${PORTSCRIPT}" "${CORE}" --controllers="${CONTROLLERCONFIG}")
+  SHADERSET=$(/storage/.config/emuelec/scripts/setsettings.sh "${PLATFORM}" "${PORTSCRIPT}" "${CORE}" --controllers="${CONTROLLERCONFIG}")
 else
-	SHADERSET=$(/storage/.config/emuelec/scripts/setsettings.sh "${PLATFORM}" "${ROMNAME}" "${CORE}" --controllers="${CONTROLLERCONFIG}")
+  SHADERSET=$(/storage/.config/emuelec/scripts/setsettings.sh "${PLATFORM}" "${ROMNAME}" "${CORE}" --controllers="${CONTROLLERCONFIG}")
 fi
 
 echo $SHADERSET
 
 if [[ ${SHADERSET} != 0 ]]; then
-RUNTHIS=$(echo ${RUNTHIS} | sed "s|--config|${SHADERSET} --config|")
+  RUNTHIS=$(echo ${RUNTHIS} | sed "s|--config|${SHADERSET} --config|")
 fi
 
 # we check is maxperf is set 
 if [ $(get_ee_setting "maxperf" "${PLATFORM}" "${ROMNAME##*/}") == "0" ]; then
-	normperf
+  normperf
 else
-	maxperf
+  maxperf
 fi
 
-fi
+
+# Clear the log file
+echo "EmuELEC Run Log" > $EMUELECLOG
+cat /etc/motd >> $EMUELECLOG
+
+[[ "${NETPLAY}" == *"connect"* ]] && echo "Netplay client!" >> $EMUELECLOG
 
 # Write the command to the log file.
 echo "PLATFORM: $PLATFORM" >> $EMUELECLOG
@@ -347,8 +358,11 @@ echo "1st Argument: $1" >> $EMUELECLOG
 echo "2nd Argument: $2" >> $EMUELECLOG
 echo "3rd Argument: $3" >> $EMUELECLOG 
 echo "4th Argument: $4" >> $EMUELECLOG 
-echo "Full arguments: $arguments" >> $EMUELECLOG 
+echo "My Core is: ${CORE}" >> $EMUELECLOG
+echo "Full Arguments: $arguments" >> $EMUELECLOG 
 echo "Run Command is:" >> $EMUELECLOG 
+echo "My Architecture: $MYARCH" >> $EMUELECLOG
+echo "My Retroarch: $RABIN" >> $EMUELECLOG
 eval echo ${RUNTHIS} >> $EMUELECLOG 
 
 if [[ "$KILLTHIS" != "none" ]]; then
@@ -368,13 +382,14 @@ fi
 # Only run fbfix on N2
 [[ "$EE_DEVICE" == "Amlogic-ng" ]] && /storage/.config/emuelec/bin/fbfix
 
-# Exceute the command and try to output the results to the log file if it was not dissabled.
+# Execute the command and try to output the results to the log file if it was not disabled.
 if [[ $LOGEMU == "Yes" ]]; then
    echo "Emulator Output is:" >> $EMUELECLOG
    eval ${RUNTHIS} >> $EMUELECLOG 2>&1
    ret_error=$?
 else
    echo "Emulator log was dissabled" >> $EMUELECLOG
+   eval ${RUNTHIS}
    eval ${RUNTHIS}
    ret_error=$?
 fi 
@@ -386,7 +401,7 @@ fi
 ${TBASH} /emuelec/scripts/show_splash.sh exit
 
 # Kill jslisten, we don't need to but just to make sure, dot not kill if using OdroidGoAdvance
-[[ "$EE_DEVICE" != "OdroidGoAdvance" ]] && killall jslisten
+[[ "$EE_DEVICE" != "RG351P" ]] && killall jslisten
 
 # Just for good measure lets make a symlink to Retroarch logs if it exists
 if [[ -f "/storage/.config/retroarch/retroarch.log" ]] && [[ ! -e "${LOGSDIR}/retroarch.log" ]]; then
@@ -398,22 +413,41 @@ fi
 # Return to default mode
 ${TBASH} /emuelec/scripts/setres.sh
 
-# reset audio to pulseaudio
+# Return to the default performance scaling
+normperf
+
+# reset audio to default
 set_audio default
 
 # remove emu.cfg if platform was reicast
 [ -f /storage/.config/reicast/emu.cfg ] && rm /storage/.config/reicast/emu.cfg
 
-#if [[ "$BTENABLED" == "1" ]]; then
+if [[ "$BTENABLED" == "1" ]]; then
 	# Restart the bluetooth agent
-#	NPID=$(pgrep -f batocera-bluetooth-agent)
-#	if [[ -z "$NPID" ]]; then
-#	(systemd-run batocera-bluetooth-agent) || :
-#	fi
-#fi
+	NPID=$(pgrep -f batocera-bluetooth-agent)
+	if [[ -z "$NPID" ]]; then
+	(systemd-run batocera-bluetooth-agent) || :
+	fi
+fi
 
 if [[ "$ret_error" != "0" ]]; then
-echo "exit 1" >> $EMUELECLOG
+echo "exit $ret_error" >> $EMUELECLOG
+
+# Check for missing bios if needed
+REQUIRESBIOS=(atari5200 atari800 atari7800 atarilynx colecovision amiga amigacd32 o2em intellivision pcengine pcenginecd pcfx fds segacd saturn dreamcast naomi atomiswave x68000 neogeo neogeocd msx msx2 sc-3000)
+
+(for e in "${REQUIRESBIOS[@]}"; do [[ "${e}" == "${PLATFORM}" ]] && exit 0; done) && RB=0 || RB=1	
+if [ $RB == 0 ]; then
+
+CBPLATFORM="${PLATFORM}"
+[[ "${CBPLATFORM}" == "msx2" ]] && CBPLATFORM="msx"
+[[ "${CBPLATFORM}" == "pcenginecd" ]] && CBPLATFORM="pcengine"
+[[ "${CBPLATFORM}" == "amigacd32" ]] && CBPLATFORM="amiga"
+
+ee_check_bios "${CBPLATFORM}" "${CORE}" "${EMULATOR}" "${ROMNAME}" "${EMUELECLOG}"
+
+fi #require bios ends
+
 	exit 1
 else
 echo "exit 0" >> $EMUELECLOG
