@@ -40,7 +40,7 @@ As ROGUELEC includes code from many upstream projects it includes many copyright
 
 **Branding**
 
-All 351ELEC related logos, videos, images and branding in general are the sole property of ROGUELEC and they are all Copyrighted by the ROGUELEC team and are not to be included in any commercial application whatsoever without the proper authorization, (yes, this includes ROGUELEC bundled with ROMS for donations!).
+All ROGUELEC related logos, videos, images and branding in general are the sole property of ROGUELEC and they are all Copyrighted by the ROGUELEC team and are not to be included in any commercial application whatsoever without the proper authorization, (yes, this includes ROGUELEC bundled with ROMS for donations!).
 
 You are however granted permission to include/modify them in your forks/projects as long as they are completely open-source, freely available (as in [but not limited to] not under a bunch of "click this sponsored ad to get the link!"), and do not infringe on any copyright laws, even if you receive donations for such project (we are not against donations for honest people!), we only ask that you give us the proper credit and if possible a link to this repo.
 
