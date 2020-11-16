@@ -64,7 +64,8 @@ makeinstall_target() {
     find $INSTALL/usr/config/emuelec/ -type f -exec chmod o+x {} \;
   
   mkdir -p $INSTALL/usr/config/emuelec/logs
-  ln -sf /var/log $INSTALL/usr/config/emuelec/logs/var-log
+  mkdir -p $INSTALL/var/log
+  ln -sf $INSTALL/var/log $INSTALL/usr/config/emuelec/logs/var-log
     
   mkdir -p $INSTALL/usr/bin/
   
