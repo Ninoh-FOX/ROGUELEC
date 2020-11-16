@@ -1,6 +1,8 @@
 # ROGUELEC
+
+Thank to **Fewtarius** for his **351ELEC** code: https://github.com/fewtarius/351ELEC/
   
-A fork of EmuELEC for the Anbernic RG351P
+A fork of EmuELEC (351ELEC) for the Anbernic RG351P
 
 ![](https://raw.githubusercontent.com/Ninoh-FOX/ROGUELEC/master/logo.png)
 
