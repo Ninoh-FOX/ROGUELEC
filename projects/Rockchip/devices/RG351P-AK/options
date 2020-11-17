@@ -48,7 +48,7 @@
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
   # Space separated list is supported,
   # e.g. FIRMWARE="dvb-firmware misc-firmware wlan-firmware"
-    FIRMWARE="wlan-firmware misc-firmware" #rockchip-firmware dvb-firmware
+    FIRMWARE="wlan-firmware misc-firmware rockchip-firmware" # dvb-firmware
     
   # additional drivers to install:
   # for a list of additional drivers see packages/linux-drivers
@@ -101,7 +101,7 @@
   KODI_DVDCSS_SUPPORT="no"
 
   # build and install bluetooth support (yes / no)
-  BLUETOOTH_SUPPORT="no"
+  BLUETOOTH_SUPPORT="yes"
 
   # build and install with KODI webfrontend (yes / no)
   KODI_WEBSERVER_SUPPORT="no"
@@ -134,10 +134,10 @@
   NFS_SUPPORT="no"
 
   # build with Samba Client support (mounting samba shares via the OS) (yes / no)
-  SAMBA_SUPPORT="no"
+  SAMBA_SUPPORT="yes"
 
   # build and install Samba Server (yes / no)
-  SAMBA_SERVER="no"
+  SAMBA_SERVER="yes"
 
   # build and install SFTP Server (yes / no)
   SFTP_SERVER="yes"
@@ -173,7 +173,7 @@
 
   # Support for partitioning and formating disks in initramfs (yes / no)
   # This adds support for parted and mkfs.ext3/4 to initramfs for OEM usage
-  INITRAMFS_PARTED_SUPPORT="no"
+  INITRAMFS_PARTED_SUPPORT="yes"
 
   # build with swap support (yes / no)
   SWAP_SUPPORT="yes"
@@ -188,8 +188,8 @@
   CRON_SUPPORT="no"
 
   # Distribution Specific source location
-  #DISTRO_MIRROR="http://sources.libreelec.tv/mirror"
-  #DISTRO_SRC="http://sources.libreelec.tv/$LIBREELEC_VERSION"
+  DISTRO_MIRROR="http://sources.libreelec.tv/mirror"
+  DISTRO_SRC="http://sources.libreelec.tv/$LIBREELEC_VERSION"
 
   # Addon Server Url
   ADDON_SERVER_URL=""
