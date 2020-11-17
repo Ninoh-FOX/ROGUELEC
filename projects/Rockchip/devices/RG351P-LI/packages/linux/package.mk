@@ -30,8 +30,8 @@ case "$LINUX" in
     ;;
   RG351P-4.4)
     PKG_VERSION="RG351P-4.4"
-	PKG_URL="https://github.com/tonyjih/RG351P-linux/archive/$PKG_VERSION.tar.gz"
-	PKG_SOURCE_NAME="linux-$PKG_VERSION.tar.gz"
+    PKG_URL="https://github.com/tonyjih/RG351P-linux/archive/$PKG_VERSION.tar.gz"
+    PKG_SOURCE_NAME="linux-$PKG_VERSION.tar.gz"
     ;;    
   raspberrypi)
     PKG_VERSION="3c235dcfe80a7c7ba360219e4a3ecb256f294376" # 4.19.83
