@@ -19,12 +19,17 @@ PKG_NEED_UNPACK="$PROJECT_DIR/$PROJECT/bootloader"
 
 case "$PROJECT" in
   Rockchip)
-  if [ "$DEVICE" == "OdroidGoAdvance" ] || [ "$DEVICE" == "RG351P" ]; then
+  if [ "$DEVICE" == "OdroidGoAdvance" ]; then
   	# This is specific for the Rk3326 on the Odroid-Go Advance
     PKG_VERSION="e7b255b54c42c8a805dee7a9409a8838cfa13586"
     PKG_SHA256="a3c9d17c363cdedb43ec34f3965594d82bf499cc1d70334610afe477adcdf9b6"
     PKG_URL="https://github.com/hardkernel/u-boot/archive/$PKG_VERSION.tar.gz"
     PKG_PATCH_DIRS="OdroidGoAdvance"
+  else if [ "$DEVICE" == "RG351P" ]; then
+    # This is specific for the Rk3326 on the RG351P
+    PKG_VERSION="odroidgoA-v2017.09"
+    PKG_URL="https://github.com/tonyjih/RG351-u-boot/archive/$PKG_VERSION.tar.gz"
+    PKG_PATCH_DIRS="RG351P"
   else
     PKG_VERSION="8659d08d2b589693d121c1298484e861b7dafc4f"
     PKG_SHA256="3f9f2bbd0c28be6d7d6eb909823fee5728da023aca0ce37aef3c8f67d1179ec1"

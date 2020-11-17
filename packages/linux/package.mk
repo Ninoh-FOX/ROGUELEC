@@ -41,6 +41,11 @@ case "$LINUX" in
     PKG_SHA256="a2760fe89a15aa7be142fd25fb08ebd357c5d855c41f1612cf47c6e89de39bb3"
     PKG_URL="https://github.com/rockchip-linux/kernel/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
+	;;
+  RG351P-4.4)
+    PKG_VERSION="RG351P-4.4"
+	PKG_URL="https://github.com/tonyjih/RG351P-linux/archive/$PKG_VERSION.tar.gz"
+	PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     ;;
   raspberrypi)
     PKG_VERSION="abaa3760da89d6fb38e55473fffc9a31dd0b1d7a" # 4.19.127
