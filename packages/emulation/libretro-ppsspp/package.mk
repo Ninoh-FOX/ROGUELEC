@@ -2,7 +2,8 @@
 # Copyright (C) 2016-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="libretro-ppsspp"
-PKG_VERSION="087de849bdc74205dd00d8e6e11ba17a591213ab"
+PKG_VERSION="caa506bf2a253a99850a4248a1cb5a399f32467a"
+PKG_SHA256="d59b4d044b761a73e744ab71e207e5b3bdbac819ed2201b79ed4455606ac0719"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/hrydgard/ppsspp"
 PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
