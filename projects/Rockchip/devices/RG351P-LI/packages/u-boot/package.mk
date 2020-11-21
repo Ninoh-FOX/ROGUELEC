@@ -78,6 +78,9 @@ makeinstall_target() {
 
     # Always install the update script
     find_file_path bootloader/update.sh && cp -av ${FOUND_PATH} $INSTALL/usr/share/bootloader
+	
+	# Copy boot.ini
+	find_file_path bootloader/boot.ini && cp -av ${FOUND_PATH} $INSTALL/usr/share/bootloader
 
     # Always install the canupdate script
     if find_file_path bootloader/canupdate.sh; then
