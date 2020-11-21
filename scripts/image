@@ -282,7 +282,6 @@ if [ "${1}" = "release" -o "${1}" = "mkimage" -o "${1}" = "noobs" ]; then
   fi
 
   cp ${ROOT}/README* ${RELEASE_DIR}
-  cp ${ROOT}/CHANGELOG* ${RELEASE_DIR}
   echo "${TARGET_VERSION}" > ${RELEASE_DIR}/RELEASE
 
   if [ ! "${MEDIACENTER}" = "no" ]; then
