@@ -13,12 +13,12 @@ makeinstall_target() {
 
 if [ "$DEVICE" == "OdroidGoAdvance" ]; then
 	mkdir -p $INSTALL/usr/share/bootloader
-	cp boot.ini $INSTALL/usr/share/bootloader
+	cp ./sources/boot.ini $INSTALL/usr/share/bootloader
 fi
 
 if [ "$DEVICE" == "RG351P" ]; then
 	mkdir -p $INSTALL/usr/share/bootloader
-	cp boot.ini $INSTALL/usr/share/bootloader
+	cp ./sources/boot.ini $INSTALL/usr/share/bootloader
 fi
 
 }
