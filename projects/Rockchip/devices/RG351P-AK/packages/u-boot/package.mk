@@ -16,6 +16,7 @@ makeinstall_target() {
   tar -xvzf rk3326-odroidgo2-linux-dtb.tar.gz
   cp rk3326-odroidgo2-linux-dtb/rk3326-odroidgo2-linux.dtb arch/$TARGET_KERNEL_ARCH/boot/dts
   cp rk3326-odroidgo2-linux-dtb/rk3326-odroidgo2-linux-v11.dtb arch/$TARGET_KERNEL_ARCH/boot/dts
+  cp rk3326-odroidgo2-linux-dtb/rk3326-rg351p-linux.dtb arch/$TARGET_KERNEL_ARCH/boot/dts
 
   # Always install the update script
   find_file_path bootloader/update.sh && cp -av ${FOUND_PATH} $INSTALL/usr/share/bootloader
