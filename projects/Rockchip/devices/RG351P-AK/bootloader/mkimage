@@ -30,6 +30,13 @@ LABEL ${DISTRO}
   APPEND boot=UUID=${UUID_SYSTEM} disk=UUID=${UUID_STORAGE} quiet ${EXTRA_CMDLINE}
 EOF
 
+cat << EOF > "${LE_TMP}/extlinux/rk3326-rg351p-linux.dtb.conf"
+LABEL ${DISTRO}
+  LINUX /${KERNEL_NAME}
+  FDT /rk3326-rg351p-linux.dtb
+  APPEND boot=UUID=${UUID_SYSTEM} disk=UUID=${UUID_STORAGE} quiet ${EXTRA_CMDLINE}
+EOF
+
   [ -e "$dtb" ] && mcopy -o "$dtb" ::
 done
 
