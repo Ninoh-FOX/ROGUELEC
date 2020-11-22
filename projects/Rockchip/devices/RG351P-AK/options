@@ -31,6 +31,7 @@
   # Additional kernel make parameters (for example to specify the u-boot loadaddress)
     KERNEL_MAKE_EXTRACMD=""
     KERNEL_MAKE_EXTRACMD+=" rockchip/rk3326-odroidgo2-linux.dtb"
+	KERNEL_MAKE_EXTRACMD+=" rockchip/rk3326-rg351p-linux"
     KERNEL_MAKE_EXTRACMD+=" rockchip/rk3326-odroidgo2-linux-v11.dtb"
     
   # Mali GPU family
@@ -48,7 +49,7 @@
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
   # Space separated list is supported,
   # e.g. FIRMWARE="dvb-firmware misc-firmware wlan-firmware"
-    FIRMWARE="wlan-firmware misc-firmware rockchip-firmware" # dvb-firmware
+    FIRMWARE="wlan-firmware misc-firmware" #rockchip-firmware dvb-firmware
     
   # additional drivers to install:
   # for a list of additional drivers see packages/linux-drivers
