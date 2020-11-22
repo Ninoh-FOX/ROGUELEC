@@ -30,6 +30,9 @@ makeinstall_target() {
 
   mkdir -p $INSTALL/usr/lib/kernel-overlays/base/lib/firmware
   cp -rf anbernic-kernel/usr/lib/kernel-overlays/base/lib/firmware/* $INSTALL/usr/lib/kernel-overlays/base/lib/firmware
+  
+  mkdir -p $INSTALL/etc/init.d
+  cp -rf anbernic-kernel/etc/init.d/* $INSTALL/etc/init.d
 
   mkdir -p $INSTALL/usr/share/bootloader
   cp -rf anbernic-kernel/usr/share/bootloader/* $INSTALL/usr/share/bootloader
