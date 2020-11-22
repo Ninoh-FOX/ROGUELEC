@@ -39,12 +39,12 @@
     OPENGLES="mali-bifrost"
 
   # kernel serial console
-    EXTRA_CMDLINE="console=ttyFIQ0 console=tty0 net.iframes=0 fbcon=rotate:0 ssh consoleblank=0 systemd.show_status=0"
+    EXTRA_CMDLINE="console=ttyFIQ0 console=tty0 net.iframes=0 fbcon=rotate:3 ssh consoleblank=0 systemd.show_status=0"
     
     LINUX="RG351P-4.4"
-       #UBOOT_SYSTEM="RG351P"
+       UBOOT_SYSTEM="RG351P"
     #LINUX="odroid-go-a-4.4"
-       UBOOT_SYSTEM="odroidgo2"
+       #UBOOT_SYSTEM="odroidgo2"
 
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
   # Space separated list is supported,
@@ -55,7 +55,7 @@
   # for a list of additional drivers see packages/linux-drivers
   # Space separated list is supported,
   # e.g. ADDITIONAL_DRIVERS="DRIVER1 DRIVER2"
-  ADDITIONAL_DRIVERS="RTL8192CU RTL8192DU RTL8192EU " #RTL8188EU RTL8812AU RTL8821CU
+  ADDITIONAL_DRIVERS="RTL8192CU" # RTL8192DU RTL8192EU RTL8188EU RTL8812AU RTL8821CU
   
   # driver addons to install:
   # for a list of additinoal drivers see packages/linux-driver-addons
@@ -174,7 +174,7 @@
 
   # Support for partitioning and formating disks in initramfs (yes / no)
   # This adds support for parted and mkfs.ext3/4 to initramfs for OEM usage
-  INITRAMFS_PARTED_SUPPORT="yes"
+  INITRAMFS_PARTED_SUPPORT="no"
 
   # build with swap support (yes / no)
   SWAP_SUPPORT="yes"

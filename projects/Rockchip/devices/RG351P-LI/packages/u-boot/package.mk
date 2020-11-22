@@ -27,9 +27,9 @@ case "$PROJECT" in
     PKG_PATCH_DIRS="OdroidGoAdvance"
   elif [ "$DEVICE" == "RG351P" ]; then
     # This is specific for the Rk3326 on the RG351P
-    PKG_VERSION="odroidgoA-v2017.09"
-    PKG_URL="https://github.com/tonyjih/RG351-u-boot/archive/$PKG_VERSION.tar.gz"
-    PKG_PATCH_DIRS="OdroidGoAdvance"
+    PKG_VERSION="odroidg12-v2015.01"
+    PKG_URL="https://github.com/lualiliu/RG351P_u-boot/archive/$PKG_VERSION.tar.gz"
+    PKG_PATCH_DIRS="RG351P"
   else
     PKG_VERSION="8659d08d2b589693d121c1298484e861b7dafc4f"
     PKG_SHA256="3f9f2bbd0c28be6d7d6eb909823fee5728da023aca0ce37aef3c8f67d1179ec1"
