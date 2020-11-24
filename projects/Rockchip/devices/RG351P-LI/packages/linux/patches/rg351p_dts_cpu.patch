@@ -1,0 +1,14 @@
+--- ./arch/arm64/boot/dts/rockchip/rk3326-rg351p-linux.dts	2020-10-10 05:27:58.000000000 +0200
++++ ./arch/arm64/boot/dts/rockchip/rk3326-rg351p-linux_mod.dts	2020-11-24 22:13:10.214788978 +0100
+@@ -152,11 +152,6 @@
+ 		1               13
+ 	>;
+ 
+-	/delete-node/ opp-408000000;
+-	/delete-node/ opp-600000000;
+-	/delete-node/ opp-816000000;
+-	/delete-node/ opp-1416000000;
+-	/delete-node/ opp-1512000000;
+ };
+ 
+ &display_subsystem {

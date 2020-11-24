@@ -25,7 +25,7 @@ __logdir="$scriptdir/logs"
 __tmpdir="/tmp"
 __builddir="$__tmpdir/build"
 __swapdir="$__tmpdir"
-__backtitle="EmuELEC - RetroPie configuration"
+__backtitle="ROGUELEC - RetroPie configuration"
 
 source "$scriptdir/scriptmodules/system.sh"
 source "$scriptdir/scriptmodules/helpers.sh"

@@ -5,5 +5,4 @@
 
 source /emuelec/scripts/env.sh
 joy2keyStart
-
-mc -a
+usr/bin/DinguxCommander 1>/dev/null 2>&1
