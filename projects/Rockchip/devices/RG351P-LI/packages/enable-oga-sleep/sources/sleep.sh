@@ -7,7 +7,7 @@ case $1 in
     # Store system brightness
     cat /sys/class/backlight/backlight/brightness > /storage/.brightness
     # unload esp8090 WiFi module
-[[ "${OGA}" == *"v11"* ]] && modprobe -r esp8089
+    modprobe -r esp8089
     # Store sound state. Try to avoid having max volume after resume
     alsactl store -f /tmp/asound.state
 	# workaround until dwc2 is fixed
@@ -22,7 +22,7 @@ case $1 in
 	modprobe -r dwc2
 	modprobe -i dwc2
 	# re-load WiFi module
-[[ "${OGA}" == *"v11"* ]] &&  modprobe esp8089
+    modprobe esp8089
     # Restore system brightness
     cat /storage/.brightness > /sys/class/backlight/backlight/brightness
     # re-detect and reapply sound, brightness and hp state
