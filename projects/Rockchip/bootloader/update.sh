@@ -44,6 +44,14 @@ fi
     dd if=$SYSTEM_ROOT/usr/share/bootloader/trust.img of=$BOOT_DISK bs=64k seek=192 conv=fsync &>/dev/null
     echo "done"
   fi
+  if [ -f $SYSTEM_ROOT/usr/share/bootloader/boot.ini ]; then
+  echo -n "Updating boot.ini..."
+  cp -p $SYSTEM_ROOT/usr/share/bootloader/boot.ini $BOOT_ROOT/boot.ini
+  fi
+  if [ -f $SYSTEM_ROOT/usr/share/bootloader/logo.bmp ]; then
+  echo -n "Updating logo.bmp..."
+  cp -p $SYSTEM_ROOT/usr/share/bootloader/logo.bmp $BOOT_ROOT/logo.bmp
+  fi
 
 # mount $BOOT_ROOT r/o
   sync

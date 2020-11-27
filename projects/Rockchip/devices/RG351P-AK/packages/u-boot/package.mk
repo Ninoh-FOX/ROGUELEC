@@ -23,6 +23,9 @@ makeinstall_target() {
 
   # Copy boot.ini
   find_file_path bootloader/boot.ini && cp -av ${FOUND_PATH} $INSTALL/usr/share/bootloader
+  
+  # Copy logo.bmp
+  find_file_path bootloader/logo.bmp && cp -av ${FOUND_PATH} $INSTALL/usr/share/bootloader
 
   # Always install the canupdate script
   if find_file_path bootloader/canupdate.sh; then

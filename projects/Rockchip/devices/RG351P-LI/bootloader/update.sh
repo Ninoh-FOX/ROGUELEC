@@ -69,7 +69,7 @@ if [ -f $SYSTEM_ROOT/usr/share/bootloader/boot.ini ]; then
 fi
 
 if [ -f $SYSTEM_ROOT/usr/share/bootloader/logo.bmp ]; then
-  echo "Updating boot.ini..."
+  echo "Updating logo.bmp..."
   cp -p $SYSTEM_ROOT/usr/share/bootloader/logo.bmp $BOOT_ROOT/logo.bmp
 fi
 
