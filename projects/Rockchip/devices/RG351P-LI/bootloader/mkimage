@@ -19,6 +19,11 @@ echo "image: copying boot.ini to root"
 mcopy "$RELEASE_DIR/3rdparty/bootloader/boot.ini" ::
 fi
 
+if [ -f "$RELEASE_DIR/3rdparty/bootloader/logo.bmp" ]; then
+echo "image: copying logo.bmp to root"
+mcopy "$RELEASE_DIR/3rdparty/bootloader/logo.bmp" ::
+fi
+
 mkdir -p "${LE_TMP}/extlinux"
 
 # copy device trees to part1

@@ -19,21 +19,20 @@ echo "image: copying boot.ini to root"
 mcopy "$RELEASE_DIR/3rdparty/bootloader/boot.ini" ::
 fi
 
+if [ -f "$RELEASE_DIR/3rdparty/bootloader/logo.bmp" ]; then
+echo "image: copying logo.bmp to root"
+mcopy "$RELEASE_DIR/3rdparty/bootloader/logo.bmp" ::
+fi
+
 mkdir -p "${LE_TMP}/extlinux"
 
 # copy device trees to part1
 for dtb in $RELEASE_DIR/3rdparty/bootloader/*.dtb; do
+
 cat << EOF > "${LE_TMP}/extlinux/$(basename ${dtb}).conf"
 LABEL ${DISTRO}
   LINUX /${KERNEL_NAME}
   FDT /$(basename ${dtb})
-  APPEND boot=UUID=${UUID_SYSTEM} disk=UUID=${UUID_STORAGE} quiet ${EXTRA_CMDLINE}
-EOF
-
-cat << EOF > "${LE_TMP}/extlinux/rk3326-rg351p-linux.dtb.conf"
-LABEL ${DISTRO}
-  LINUX /${KERNEL_NAME}
-  FDT /rk3326-rg351p-linux.dtb
   APPEND boot=UUID=${UUID_SYSTEM} disk=UUID=${UUID_STORAGE} quiet ${EXTRA_CMDLINE}
 EOF
 

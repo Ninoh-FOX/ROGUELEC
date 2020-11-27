@@ -68,6 +68,11 @@ if [ -f $SYSTEM_ROOT/usr/share/bootloader/boot.ini ]; then
   cp -p $SYSTEM_ROOT/usr/share/bootloader/boot.ini $BOOT_ROOT/boot.ini
 fi
 
+if [ -f $SYSTEM_ROOT/usr/share/bootloader/logo.bmp ]; then
+  echo "Updating boot.ini..."
+  cp -p $SYSTEM_ROOT/usr/share/bootloader/logo.bmp $BOOT_ROOT/logo.bmp
+fi
+
 # update device tree
   for all_dtb in $SYSTEM_ROOT/usr/share/bootloader/*.dtb; do
     dtb=$(basename $all_dtb)
